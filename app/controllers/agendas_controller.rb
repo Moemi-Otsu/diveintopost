@@ -22,8 +22,10 @@ class AgendasController < ApplicationController
   end
 
   def destroy
-    @agenda.destroy
-    redirect_to dashboard_url, notice: '記事削除に成功しました！'
+    if current_user.id == @agenda.team.owner_id
+      @agenda.destroy
+      redirect_to dashboard_url, notice: '記事削除に成功しました！'
+    end
   end
 
   private
