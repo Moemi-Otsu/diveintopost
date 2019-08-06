@@ -22,8 +22,13 @@ class AgendasController < ApplicationController
   end
 
   def destroy
-    if current_user.id == @agenda.team.owner_id
+    if current_user.id == @agenda.team.owner_id || current_user.id == @agenda.user_id
       @agenda.destroy
+      # メール送受信start
+      team_members = Team.find(@agenda.team.id).members
+      team_members_email = team_members.pluck(:email)
+      NoticeMailer.notice_mail(team_members_email).deliver
+      # メール送受信end
       redirect_to dashboard_url, notice: '記事削除に成功しました！'
     end
   end
