@@ -26,11 +26,11 @@ class ArticlesController < ApplicationController
 
   def create
     agenda = Agenda.find(params[:agenda_id])
-    article = agenda.articles.build(article_params)
-    article.user = current_user
-    article.team_id = agenda.team_id
-    if article.save
-      redirect_to article_url(article), notice: '記事作成に成功しました！'
+    @article = agenda.articles.build(article_params)
+    @article.user = current_user
+    @article.team_id = agenda.team_id
+    if @article.save
+      redirect_to article_url(@article), notice: '記事作成に成功しました！'
     else
       render :new
     end
