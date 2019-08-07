@@ -55,6 +55,11 @@
                         <% else %>
                         <% end %>
                       <% end %>
+                      <% if current_user.id == @team.owner.id %>
+                        <% if assign.user != @team.owner %>
+                          <td><%= link_to '権限移動', team_path(@team, params: { team: { owner_id: assign.user.id} }), method: :put %></td>
+                        <% end %>
+                      <% end %>
                     </tr>
                   <% end %>
                 </tbody>

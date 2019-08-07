@@ -35,6 +35,14 @@ class TeamsController < ApplicationController
 
   def update
     if @team.update(team_params)
+      # オーナー権限が変更されていた場合はメール送信
+      if team_params.include?("name")
+      else
+        new_owner_user = User.find(team_params[:owner_id])
+        @email = new_owner_user.email
+        @team_name = @team.name
+        OwnerMailer.owner_mail(@email, @team_name).deliver
+      end
       redirect_to @team, notice: 'チーム更新に成功しました！'
     else
       flash.now[:error] = '保存に失敗しました、、'
