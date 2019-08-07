@@ -30,12 +30,20 @@ class AssignsController < ApplicationController
       'リーダーは削除できません。'
     elsif Assign.where(user_id: assigned_user.id).count == 1
       'このユーザーはこのチームにしか所属していないため、削除できません。'
+    # チームオーナーはチームリーダー以外のメンバーを削除可能
+    elsif current_user == assign.team.owner
+      assign.destroy
+      set_next_team(assign, assigned_user)
+      'メンバーを削除しました。'
+    # ユーザーは自分のアカウントのみ削除可能。それ以外のメンバーは削除不可能。
+    elsif current_user != assigned_user
+      'ユーザー本人以外のアカウントを削除することはできません。'
     elsif assign.destroy
       set_next_team(assign, assigned_user)
       'メンバーを削除しました。'
     else
       'なんらかの原因で、削除できませんでした。'
-    end    
+    end
   end  
   
   def email_reliable?(address)
