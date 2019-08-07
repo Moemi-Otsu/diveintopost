@@ -41,7 +41,20 @@
                     <tr>
                       <td><%= image_tag 'default.jpg', size: '40x40' %></td>
                       <td><%= assign.user.email %></td>
-                      <td><%= link_to '削除', team_assign_path(@team, assign), method: :delete, class: 'btn btn-sm btn-danger' %></td>
+                      <!-- ログインしているのがチームオーナーのとき -->
+                      <% if current_user == @team.owner %>
+                        <% if assign.user == @team.owner %>
+                        <% else %>
+                          <td><%= link_to '削除', team_assign_path(@team, assign), method: :delete, class: 'btn btn-sm btn-danger' %></td>
+                        <% end %>
+                      <!-- ログインしているのがチームオーナーじゃないとき -->
+                      <% elsif current_user != @team.owner %>
+                        <% if assign.user == @team.owner %>
+                        <% elsif assign.user == current_user %>
+                          <td><%= link_to '削除', team_assign_path(@team, assign), method: :delete, class: 'btn btn-sm btn-danger' %></td>
+                        <% else %>
+                        <% end %>
+                      <% end %>
                       <% if current_user.id == @team.owner.id %>
                         <% if assign.user != @team.owner %>
                           <td><%= link_to '権限移動', team_path(@team, params: { team: { owner_id: assign.user.id} }), method: :put %></td>
